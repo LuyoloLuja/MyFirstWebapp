@@ -1,5 +1,13 @@
 package net.myfirst.webapp;
 
+import spark.ModelAndView;
+import spark.template.handlebars.HandlebarsTemplateEngine;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import static spark.Spark.*;
 
 public class App {
@@ -35,6 +43,27 @@ public class App {
                 return "Hello, " + username + "!";
             }
             return "Hello!";
+        });
+
+        get("/hello", (req, res) -> {
+            Map<String, Object> map = new HashMap<>();
+            return new ModelAndView(map, "hello.handlebars");
+
+        }, new HandlebarsTemplateEngine());
+
+        post("/hello", (req, res) -> {
+
+            Map<String, Object> map = new HashMap<>();
+            String greeting = "Hello, " + req.queryParams("username");
+            map.put("greeting", greeting);
+
+            return new ModelAndView(map, "hello.handlebars");
+
+        }, new HandlebarsTemplateEngine());
+
+        get("/greeted", (req, res) -> {
+//            return new ModelAndView(map, "hello.handlebars");
+            return null;
         });
     }
 }
