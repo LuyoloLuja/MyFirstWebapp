@@ -14,8 +14,16 @@ public class App {
     static Map<String, Object> map = new HashMap<>();
     static Map<String, Integer> namesCounter = new HashMap<>();
 
+    static int getHerokuAssignedPort() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        if (processBuilder.environment().get("PORT") != null) {
+            return Integer.parseInt(processBuilder.environment().get("PORT"));
+        }
+        return 1997; //return default port if heroku-port isn't set (i.e. on localhost)
+    }
+
     public static void main(String[] args) {
-        port(1997);
+        port(getHerokuAssignedPort());
         staticFiles.location("/public");
 
         get("/greet", (req, res) -> "Hello!");
