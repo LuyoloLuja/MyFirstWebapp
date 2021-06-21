@@ -99,5 +99,10 @@ public class App {
 
             return new ModelAndView(map, "greeted.handlebars");
         }, new HandlebarsTemplateEngine());
+
+        get("/greeted/:username", (req, res) -> {
+
+            return new ModelAndView(map, "greeted.handlebars");
+        }, new HandlebarsTemplateEngine());
     }
 }
