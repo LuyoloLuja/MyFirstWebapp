@@ -3,12 +3,16 @@ package net.myfirst.webapp;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import static spark.Spark.*;
 
 public class App {
+
+    static Map<String, Object> map = new HashMap<>();
+    static Map<String, Integer> namesCounter = new HashMap<>();
 
     public static void main(String[] args) {
         port(1997);
@@ -44,29 +48,39 @@ public class App {
         });
 
         get("/hello", (req, res) -> {
-            Map<String, Object> map = new HashMap<>();
             return new ModelAndView(map, "hello.handlebars");
 
         }, new HandlebarsTemplateEngine());
 
         post("/hello", (req, res) -> {
 
-            Map<String, Object> map = new HashMap<>();
-
             String username = req.queryParams("username");
             String language = req.queryParams("language");
             String greetMessage = "";
 
             if (!username.equals("") && !language.equals("")) {
-                if (language.equals("english")) {
-                    greetMessage = "Hello, " + username;
-                } else if(language.equals("isixhosa")) {
-                    greetMessage = "Molo, " + username;
-                } else if (language.equals("afrikaans")) {
-                    greetMessage = "More, " + username;
+                switch (language) {
+                    case "english":
+                        greetMessage = "Hello, " + username;
+                        break;
+                    case "isixhosa":
+                        greetMessage = "Molo, " + username;
+                        break;
+                    case "afrikaans":
+                        greetMessage = "More, " + username;
+                        break;
                 }
             }
+
+            if (!namesCounter.containsKey(username)) {
+                namesCounter.put(username, 1);
+            } else if (namesCounter.containsKey(username)) {
+                namesCounter.put(username, namesCounter.get(username) + 1);
+            }
+            int counterForNames = namesCounter.size();
+
             map.put("greeting", greetMessage);
+            map.put("counter", counterForNames);
 
             return new ModelAndView(map, "hello.handlebars");
 
@@ -74,17 +88,16 @@ public class App {
 
         get("/greeted", (req, res) -> {
 
-            Map<String, String> map = new HashMap<>();
-            String username = req.queryParams("username");
+            ArrayList<String> greetedNames = new ArrayList<>();
 
-            map.put("greetedNames", username);
-
-            for (Map.Entry<String, String> entrySet : map.entrySet()){
-                System.out.println(entrySet);
-                map.put("greetedNames", entrySet.getValue());
+            for (Map.Entry<String, Integer> names : namesCounter.entrySet()) {
+                String availableNames = names.getKey();
+                greetedNames.add(availableNames);
             }
 
+            map.put("getNames", greetedNames);
+
             return new ModelAndView(map, "greeted.handlebars");
-        });
+        }, new HandlebarsTemplateEngine());
     }
 }

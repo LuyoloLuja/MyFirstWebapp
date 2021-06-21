@@ -14,6 +14,10 @@
         <input type="text" name="username">
         <input type="submit" >
 
+        <span>
+           Counter: {{counter}}
+        </span>
+
         <div class="radio-buttons">
             <input type="radio" name="language" value="english"><span>English</span>
             <input type="radio" name="language" value="isixhosa"><span>IsiXhosa</span>
@@ -24,14 +28,6 @@
     <span>
         {{greeting}}
     </span>
-
-    <div>
-        <ul>
-            {{#each users}}
-            <li>{{this}}</li>
-            {{/each}}
-         </ul>
-    </div>
 
 </body>
 </html>
