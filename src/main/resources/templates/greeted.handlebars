@@ -8,8 +8,15 @@
     <title>Greeted People</title>
 </head>
 <body>
-    <div class="greeted-names">
-        {{getNames}}
+    <h2>Greeted Usernames</h2>
+    <div>
+        <ul>
+            {{#each getNames}}
+                <a href="greeted/{{username}}">
+                    <li>{{this}}</li>
+                </a>
+            {{/each}}
+        </ul>
     </div>
 </body>
 </html>

@@ -5,6 +5,7 @@ import spark.template.handlebars.HandlebarsTemplateEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static spark.Spark.*;
@@ -35,6 +36,8 @@ public class App {
 
         get("/greet/:username/language/:language", (req, res) -> {
             String name = req.params(":username");
+            name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+
             String language = req.params(":language");
 
             if (language.equals("english")) {
@@ -49,6 +52,8 @@ public class App {
 
         post("/greet", (req, res) -> {
             String username = req.queryParams("username");
+            username = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
+
             if (!username.equals("")) {
                 return "Hello, " + username + "!";
             }
@@ -63,6 +68,8 @@ public class App {
         post("/hello", (req, res) -> {
 
             String username = req.queryParams("username");
+            username = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
+
             String language = req.queryParams("language");
             String greetMessage = "";
 
@@ -85,10 +92,10 @@ public class App {
             } else if (namesCounter.containsKey(username)) {
                 namesCounter.put(username, namesCounter.get(username) + 1);
             }
-            int counterForNames = namesCounter.size();
+            int counterForAll = namesCounter.size();
 
             map.put("greeting", greetMessage);
-            map.put("counter", counterForNames);
+            map.put("counterForAll", counterForAll);
 
             return new ModelAndView(map, "hello.handlebars");
 
@@ -109,6 +116,16 @@ public class App {
         }, new HandlebarsTemplateEngine());
 
         get("/greeted/:username", (req, res) -> {
+            String username = req.params("username");
+            username = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
+            int counterForOneUser = 0;
+
+            if (namesCounter.containsKey(username)) {
+                counterForOneUser = namesCounter.get(username);
+            }
+            System.out.println(username + counterForOneUser);
+
+            map.put("counterForOneUser", counterForOneUser);
 
             return new ModelAndView(map, "greeted.handlebars");
         }, new HandlebarsTemplateEngine());
